@@ -1,0 +1,58 @@
+{
+  "name": "cs2-price-api",
+  "version": "1.0.0",
+  "description": "Official API Skins client: CS2 skin prices (cheapest offers) from 22 marketplaces and buy orders from DMarket, Market.CSGO and Steam",
+  "keywords": [
+    "cs2",
+    "csgo",
+    "counter-strike",
+    "skins",
+    "prices",
+    "steam-market",
+    "buff163",
+    "csfloat",
+    "skinport",
+    "dmarket",
+    "api",
+    "trading"
+  ],
+  "homepage": "https://apiskins.com/price-api",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apiskins/cs2-price-api.git"
+  },
+  "bugs": "https://github.com/apiskins/cs2-price-api/issues",
+  "license": "MIT",
+  "author": "API Skins (https://apiskins.com)",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json && tsc -p tsconfig.cjs.json && node scripts/cjs-package.mjs",
+    "test": "npm run build && node --test test/client.test.mjs",
+    "prepublishOnly": "npm test"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  }
+}
