@@ -1,0 +1,34 @@
+# Publishes to npm when a release is published on GitHub (Releases → Draft a new release).
+# The release's tag must match package.json's version, e.g. v1.0.0.
+#
+# The first publish needs an npm token: add it as the NPM_TOKEN secret (repo Settings → Secrets
+# and variables → Actions). After that, set up trusted publishing on npmjs.com (the package's
+# Settings → Trusted publishing → GitHub Actions, workflow "publish.yml") and delete the secret:
+# npm then takes this workflow's GitHub identity instead of a token.
+
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g npm@latest
+      - name: Tag matches package.json
+        run: test "v$(node -p 'require(`./package.json`).version')" = "${{ github.event.release.tag_name }}"
+      - run: npm install --no-audit --no-fund
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
